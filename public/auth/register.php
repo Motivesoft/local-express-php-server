@@ -1,9 +1,14 @@
 <?php
 include '../db.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = trim($_POST['username']);
+    $username = $_POST['username'];
     $password = $_POST['password'];
 
+    // Sanitise the username before use, using the same rules as when logging in
+    $username = trim($username);
+    $username = filter_var($username, FILTER_SANITIZE_STRING);
+    $username = substr($username, 0, 30);
+    
     // Check username availability
     $stmt = $pdo->prepare("SELECT id FROM users WHERE username = ?");
     $stmt->execute([$username]);
