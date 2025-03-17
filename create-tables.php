@@ -42,12 +42,13 @@ try {
 
     // Values for permissions
     $sql = "INSERT IGNORE INTO roles (id, name) VALUES 
-                (0, 'player'),
-                (1, 'tester'),
-                (2, 'puzzle_admin'),
-                (3, 'user_admin'),
-                (4, 'system_admin'),
-                (5, 'developer')";
+                (0, 'unregistered'),
+                (1, 'registered'),
+                (2, 'tester'),
+                (3, 'puzzle_admin'),
+                (4, 'user_admin'),
+                (5, 'system_admin'),
+                (6, 'developer')";
     $conn->exec($sql);
 
     // Table of applicable permissions for a user
@@ -97,9 +98,30 @@ try {
     )";
     $conn->exec($sql);
 
+    // Which roles can see which collections - where '0' is a hard-coded role for unregistered users
+    $sql = "INSERT IGNORE INTO role_collections (role_id, collection_id) VALUES 
+                (0, 1),
+                (1, 1),
+                (1, 2),
+                (2, 1),
+                (2, 2),
+                (2, 3),
+                (3, 1),
+                (3, 2),
+                (3, 3),
+                (3, 4),
+                (6, 1),
+                (6, 2),
+                (6, 3),
+                (6, 4)";
+    $conn->exec($sql);
+
     // Puzzles
     $sql = "CREATE TABLE IF NOT EXISTS puzzles (
                 id INT PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(40) NOT NULL,
+                size INT,
+                letters VARCHAR(256) NOT NULL,
                 user_id INT,
                 collection_id INT,
                 update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

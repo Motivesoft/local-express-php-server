@@ -2,26 +2,41 @@
 
 class PuzzleCollectionsService
 {
-    public static function getCollections()
+    public static function getCollections($queryParams)
     {
-        return [
-            "collections" => [
-                [
-                    "id" => "1",
-                    "shortPrompt" => "Shorter Name",
-                    "longPrompt" => "This is a big long string about a collection",
-                ],
-                [
-                    "id" => "2",
-                    "shortPrompt" => "Test Name",
-                    "longPrompt" => "This is another long string about a collection",
-                ],
-                [
-                    "id" => "3",
-                    "shortPrompt" => "Archive",
-                    "longPrompt" => "This is waffle about our extensive archive",
-                ],
-            ]
-        ];
+        include 'db.php';
+
+        $role = 0;  // Default role for an unregistered user
+        if (isset($_SESSION['user_id'])) {
+            // A user is logged on. What is their role?
+            $stmt = $pdo->query("SELECT id,  FROM collections");
+            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        }
+
+        $stmt = $pdo->query("SELECT id, short_prompt, long_prompt FROM collections");
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $items;
+    }
+
+    public static function getCollectionPuzzleList($queryParams)
+    {
+        include 'db.php';
+
+        $collectionId = 1; // The default collection - regular, published puzzles 
+
+        // Override with the 'c' (for 'collection') query parameter if present
+        if (isset($queryParams['c'])) {
+            $collectionId = $queryParams['c'];
+        } else {
+            error_log("No collection id provided. Using default");
+        }
+
+        $stmt = $pdo->prepare("SELECT id, name, size FROM puzzles WHERE collection_id = :collectionId");
+        $stmt->execute(['collectionId' => $collectionId]);
+        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $items;
     }
 }
