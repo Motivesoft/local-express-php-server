@@ -1,12 +1,19 @@
 <?php
 // api.php
 
+require_once 'puzzle-collections.php';
+
 // Set the content type to JSON
 header('Content-Type: application/json');
 
 // Define the API routes
 $routes = [
-    '/api/version' => 'getVersion'
+    '/api/version' => function() {
+        return getVersion();
+    },
+    '/api/puzzle-collections'=> function() {
+        return PuzzleCollectionsService::getCollections();
+    }
 ];
 
 // Get the request URI
@@ -22,6 +29,8 @@ if (array_key_exists($requestUri, $routes)) {
     http_response_code(404);
     echo json_encode(['error' => 'Not Found']);
 }
+
+// API functions
 
 // Function to return the version
 function getVersion() {
