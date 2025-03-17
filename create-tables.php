@@ -31,10 +31,10 @@ try {
 
     // Values for permissions
     $sql = "INSERT IGNORE INTO roles (id, name) VALUES 
-        (0, 'unregistered'),
-        (1, 'registered'),
-        (2, 'tester'),
-        (3, 'admin')";
+        (1, 'unregistered'),
+        (2, 'registered'),
+        (3, 'tester'),
+        (4, 'admin')";
     $conn->exec($sql);
 
     // Table of all users
@@ -88,16 +88,16 @@ try {
 
     // Which roles can see which collections - where '0' is a hard-coded role for unregistered users
     $sql = "INSERT IGNORE INTO role_collections (role_id, collection_id) VALUES 
-                (0, 1),
                 (1, 1),
-                (1, 2),
                 (2, 1),
                 (2, 2),
-                (2, 3),
                 (3, 1),
                 (3, 2),
                 (3, 3),
-                (3, 4)";
+                (4, 1),
+                (4, 2),
+                (4, 3),
+                (4, 4)";
     $conn->exec($sql);
 
     // Puzzles
