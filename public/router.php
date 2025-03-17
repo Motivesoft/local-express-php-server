@@ -4,6 +4,13 @@ $requestUri = $_SERVER['REQUEST_URI'];
 $documentRoot = __DIR__;
 $filePath = $documentRoot . $requestUri;
 
+
+// Check if it's an API request
+if (strpos($requestUri, '/api/') === 0) {
+    include 'api/api.php';
+    return true;
+}
+
 // Serve an index file if the navigation path is to a directory
 if (is_dir($filePath)) {
     if (file_exists($filePath . '/index.php')) {

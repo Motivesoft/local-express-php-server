@@ -13,7 +13,8 @@
                 "-S",
                 "localhost:4000",
                 "-t",
-                "."
+                ".",
+                "router.php"
             ],
             "cwd": "${workspaceRoot}/public",
             "serverReadyAction": {
