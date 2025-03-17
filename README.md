@@ -46,17 +46,15 @@ To create a database and add users using MariaDB command-line tools, follow thes
    EXIT;
    ```
 
-Remember to replace `your_database_name`, `your_username`, and `your_password` with your actual desired values. Also, ensure you're using strong, unique passwords for security[2].
 
-Citations:
-[1] https://www.mariadbtutorial.com/mariadb-basics/mariadb-create-database/
-[2] https://alvinalexander.com/blog/post/mysql/add-user-mysql/
-[3] https://mariadb.com/kb/en/account-management-sql-commands/
-[4] https://www.inmotionhosting.com/support/website/how-to-create-a-database-with-mariadb/
-[5] https://www.beekeeperstudio.io/blog/how-to-create-a-user-in-mariadb
-[6] https://phoenixnap.com/kb/how-to-create-mariadb-user-grant-privileges
-[7] https://mariadb.com/kb/en/create-database/
-[8] https://mariadb.com/kb/en/create-user/
+## Creating and dropping tables
+```
+php  -d xdebug.mode=off drop-tables.php 
+php  -d xdebug.mode=off create-tables.php 
+```
 
----
-Answer from Perplexity: pplx.ai/share
+## Running the server
+```
+cd public
+php -S 0.0.0.0:9999 router.php
+```
