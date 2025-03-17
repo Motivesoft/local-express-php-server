@@ -31,6 +31,6 @@ http_response_code(404);
 <body>
     <h1>404 - Page Not Found</h1>
     <p>Sorry, the page you are looking for does not exist.</p>
-    <p><a href="<?php echo $_SERVER['HTTP_HOST']; ?>">Return to Homepage</a></p>
+    <p><a href="/">Return to Homepage</a></p>
 </body>
 </html>

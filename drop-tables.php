@@ -10,7 +10,6 @@ try {
         'role_collections',
         'collections',
         'prompts',
-        'user_roles',
         'users',
         'roles',
         'status'

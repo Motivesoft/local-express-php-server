@@ -9,9 +9,7 @@ class PuzzleCollectionsService
         $role = 0;  // Default role for an unregistered user
         if (isset($_SESSION['user_id'])) {
             // A user is logged on. What is their role?
-            $stmt = $pdo->query("SELECT id,  FROM collections");
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+            $role = $_SESSION['role_id'];
         }
 
         $stmt = $pdo->query("SELECT id, short_prompt, long_prompt FROM collections");

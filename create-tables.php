@@ -21,44 +21,32 @@ try {
                 (4, 'blocked')";
     $conn->exec($sql);
 
+    // Table of all permissions (tester, puzzle admin, user admin, system admin, ...)
+    $sql = "CREATE TABLE IF NOT EXISTS roles (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(40) UNIQUE NOT NULL,
+        update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )";
+    $conn->exec($sql);
+
+    // Values for permissions
+    $sql = "INSERT IGNORE INTO roles (id, name) VALUES 
+        (0, 'unregistered'),
+        (1, 'registered'),
+        (2, 'tester'),
+        (3, 'admin')";
+    $conn->exec($sql);
+
     // Table of all users
     $sql = "CREATE TABLE IF NOT EXISTS users (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 username VARCHAR(40) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
-                status_id INT,
+                status_id INT DEFAULT 1,
+                role_id INT DEFAULT 1,
                 update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                CONSTRAINT fk_users_status FOREIGN KEY (status_id) REFERENCES status(id)
-            )";
-    $conn->exec($sql);
-
-    // Table of all permissions (tester, puzzle admin, user admin, system admin, ...)
-    $sql = "CREATE TABLE IF NOT EXISTS roles (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                name VARCHAR(40) UNIQUE NOT NULL,
-                update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            )";
-    $conn->exec($sql);
-
-    // Values for permissions
-    $sql = "INSERT IGNORE INTO roles (id, name) VALUES 
-                (0, 'unregistered'),
-                (1, 'registered'),
-                (2, 'tester'),
-                (3, 'puzzle_admin'),
-                (4, 'user_admin'),
-                (5, 'system_admin'),
-                (6, 'developer')";
-    $conn->exec($sql);
-
-    // Table of applicable permissions for a user
-    $sql = "CREATE TABLE IF NOT EXISTS user_roles (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                user_id INT,
-                role_id INT,
-                update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users(id),
-                CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES roles(id)
+                CONSTRAINT fk_users_status FOREIGN KEY (status_id) REFERENCES status(id),
+                CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
             )";
     $conn->exec($sql);
 
@@ -109,11 +97,7 @@ try {
                 (3, 1),
                 (3, 2),
                 (3, 3),
-                (3, 4),
-                (6, 1),
-                (6, 2),
-                (6, 3),
-                (6, 4)";
+                (3, 4)";
     $conn->exec($sql);
 
     // Puzzles

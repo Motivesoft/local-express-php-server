@@ -1,9 +1,12 @@
 <?php
-// Get the requested URI
+// Get the requested URI and test whether it is valid and to continue routing
+//   - Route API stuff to its own handler
+//   - Turn a directory request into a index file request
+//   - Test file existence by stripping any query params from the end and serving the page
+//   - Otherwise, show a 404
 $requestUri = $_SERVER['REQUEST_URI'];
 $documentRoot = __DIR__;
-$filePath = $documentRoot . $requestUri;
-
+$filePath = $documentRoot . parse_url($requestUri, PHP_URL_PATH);
 
 // Check if it's an API request
 if (strpos($requestUri, '/api/') === 0) {
