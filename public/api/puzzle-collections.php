@@ -7,11 +7,7 @@ class PuzzleCollectionsService
     {
         include 'db.php';
 
-        $roleId = 1;  // Default role for an unregistered user
-        if (isset($_SESSION['user_id'])) {
-            // A user is logged on. What is their role?
-            $roleId = $_SESSION['role_id'];
-        }
+        $roleId = PuzzleCollectionsService::getRoleId();
 
         // Select the collections appropriate for the role of the logged on user
         $sql = "SELECT id, short_prompt, long_prompt 
@@ -26,26 +22,74 @@ class PuzzleCollectionsService
         return $items;
     }
 
+    // Get metadata for the pizzles from a specific collection,
+    // identified by passing its ID as a query param:
+    //   - "...?c=2"
     public static function getCollectionPuzzleList($queryParams)
     {
         include 'db.php';
 
-        $collectionId = 1; // The default collection - regular, published puzzles 
+        // Make sure this is a request for a collection the user is allowed to access
+        $collections = PuzzleCollectionsService::getCollections($queryParams);
+        $collectionId = PuzzleCollectionsService::getCollectionId($queryParams);
+
+        foreach( $collections as $collection ) {
+            if( $collection['id'] == $collectionId ) {
+                $sql = "SELECT id, name, size FROM puzzles WHERE collection_id = :collectionId";
+        
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['collectionId' => $collectionId]);
+        
+                $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                return $items;
+            }
+        }
+
+        // Unauthorized
+        return PuzzleCollectionsService::getErrorResponse();
+    }
+
+    public static function getPuzzle($queryParams) {
+    }
+
+    // Get the role of the current user, defaulting to that for an unregistered user
+    private static function getRoleId() {
+        // Default role for an unregistered user
+        $roleId = 1;  
+
+        // Override with the logged on user, if there is one
+        if (isset($_SESSION['user_id'])) {
+            $roleId = $_SESSION['role_id'];
+        }
+
+        return $roleId;
+    }
+
+    // Get the collection ID from query parameters, or return the default
+    private static function getCollectionId($queryParams) {
+        // The default collection - regular, published puzzles 
+        $collectionId = 1; 
 
         // Override with the 'c' (for 'collection') query parameter if present
         if (isset($queryParams['c'])) {
             $collectionId = $queryParams['c'];
-        } else {
-            error_log("No collection id provided. Using default");
         }
 
-        $sql = "SELECT id, name, size FROM puzzles WHERE collection_id = :collectionId";
+        return $collectionId;
+    }
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['collectionId' => $collectionId]);
+    public static function getErrorResponse() {
+        $errorResponse = [
+            'status' => 401,
+            'error' => 'UNAUTHORIZED',
+            'message' => 'You are not authorized to access this data.',
+            'details' => 'Please log on as a user with permissions to access this data.'
+        ];
 
-        $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        header('Content-Type: application/problem+json');
+        http_response_code(401);
 
-        return $items;
+        return $errorResponse;
     }
 }

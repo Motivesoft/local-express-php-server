@@ -39,9 +39,10 @@ if (count($segments) > 1) {
 
         default:
             // Return a 404 error for undefined routes
+            header('Content-Type: application/problem+json');
             http_response_code(404);
+
             $response = ['error' => 'Not Found'];
-            // TODO Delete this: echo json_encode(['error' => 'Not Found']);
             break;
     }
 
