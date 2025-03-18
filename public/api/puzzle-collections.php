@@ -1,6 +1,6 @@
 <?php
 
-include_once("helper.php");
+require_once 'helper.php';
 
 class PuzzleCollectionsService
 {
