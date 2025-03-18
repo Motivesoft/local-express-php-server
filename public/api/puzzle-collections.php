@@ -1,5 +1,7 @@
 <?php
 
+include_once("helper.php");
+
 class PuzzleCollectionsService
 {
     // Return collections for the logged-in user (or unregistered user)
@@ -47,7 +49,7 @@ class PuzzleCollectionsService
         }
 
         // Unauthorized
-        return PuzzleCollectionsService::getErrorResponse();
+        return Helper::getErrorResponse401("You are not authorized to access this data.");
     }
 
     public static function getPuzzle($queryParams) {
@@ -77,19 +79,5 @@ class PuzzleCollectionsService
         }
 
         return $collectionId;
-    }
-
-    public static function getErrorResponse() {
-        $errorResponse = [
-            'status' => 401,
-            'error' => 'UNAUTHORIZED',
-            'message' => 'You are not authorized to access this data.',
-            'details' => 'Please log on as a user with permissions to access this data.'
-        ];
-
-        header('Content-Type: application/problem+json');
-        http_response_code(401);
-
-        return $errorResponse;
     }
 }

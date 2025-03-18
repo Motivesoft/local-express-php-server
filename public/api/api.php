@@ -1,6 +1,7 @@
 <?php
 // api.php
 
+require_once 'helper.php';
 require_once 'puzzle-collections.php';
 
 // Set the content type to JSON
@@ -39,10 +40,7 @@ if (count($segments) > 1) {
 
         default:
             // Return a 404 error for undefined routes
-            header('Content-Type: application/problem+json');
-            http_response_code(404);
-
-            $response = ['error' => 'Not Found'];
+            $response = Helper::getErrorResponse404();
             break;
     }
 
